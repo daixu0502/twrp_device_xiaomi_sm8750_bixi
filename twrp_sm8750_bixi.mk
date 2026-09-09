@@ -10,8 +10,8 @@ DEVICE_PATH := device/xiaomi/sm8750_bixi
 $(call inherit-product, $(DEVICE_PATH)/device.mk)
 
 ## Device identifier
-PRODUCT_DEVICE := xiaomi_bixi
-PRODUCT_NAME := twrp_xiaomi_bixi
+PRODUCT_DEVICE := sm8750_bixi
+PRODUCT_NAME := twrp_sm8750_bixi
 PRODUCT_BRAND := xiaomi
 PRODUCT_MODEL := 2505APX7BC
 PRODUCT_MANUFACTURER := xiaomi
