@@ -1,0 +1,89 @@
+# Copyright (c) 2017-2023, The Linux Foundation. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of The Linux Foundation nor
+#       the names of its contributors may be used to endorse or promote
+#       products derived from this software without specific prior written
+#       permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+import /init.recovery.wifi.rc
+
+on init
+    start vendor.boot-qti
+    setprop prepdecrypt.setpatch true
+
+on early-fs
+    write /proc/sys/walt/sched_lib_name "recovery,magiskboot,Updater,updater,update_engine_sideload"
+    write /proc/sys/walt/sched_lib_mask_force 255
+
+on fs
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+    write /proc/sys/kernel/firmware_config/force_sysfs_fallback 1
+    chmod 0660 /dev/qseecom
+    chown system drmrpc /dev/qseecom
+    chmod 0664 /dev/ion
+    chown system system /dev/ion
+    # Its SSD listener opens by-name/ssd, which ueventd may not have made yet.
+    wait /dev/block/bootdevice/by-name/ssd 10
+    start vendor.qseecomd
+    mkdir /mnt/vendor 0775 shell system
+    mkdir /mnt/vendor/persist 0775 shell system
+    mkdir /tmp/persist 0775 shell system
+    mount none /tmp/persist /mnt/vendor/persist bind rec
+    install_keyring
+
+on post-fs
+    start odm.variant-script
+
+on boot
+    setprop sys.usb.config adb
+
+# qseecomd is up, so the HALs that reach a trustlet through it can follow.
+on property:vendor.sys.listeners.registered=true
+    start vendor.gatekeeper_default
+    start vendor.secure_element
+
+# variant-script has copied this SKU's files into /odm.
+on property:twrp.variant.files_copied=1
+    start odm.vibratorfeature-service
+    start odm.touch_report
+    start odm.weaver-service
+
+on property:twrp.modules.loaded=true
+    # KeyMint stays down until this has pointed the version properties at the
+    # installed system, so start it as early as the mapper nodes allow.
+    start odm.prepdecrypt
+    # Keep the modem image mounted: qca_cld3_peach_v2 loads WLAN firmware
+    # from /vendor/firmware_mnt/image after the driver is inserted.
+    mkdir /vendor/firmware_mnt 0755 root shell
+    mount vfat /dev/block/bootdevice/by-name/modem${ro.boot.slot_suffix} /vendor/firmware_mnt ro,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
+    mount none /vendor/firmware_mnt /firmware bind
+    # Load ADSP firmware for PMIC
+    wait /sys/kernel/boot_adsp/boot
+    write /sys/kernel/boot_adsp/boot 1
+    # This make USB-OTG work
+    wait /sys/kernel/boot_adsp/ssr
+    write /sys/kernel/boot_adsp/ssr 1
+    wait /sys/class/power_supply/battery
+    start vendor.health-default
+    setprop twrp.firmware.mounted true

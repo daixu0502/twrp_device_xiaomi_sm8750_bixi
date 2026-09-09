@@ -1,0 +1,16 @@
+# ADB
+ro.adb.secure=0
+ro.boot.dynamic_partitions=true
+
+# Gatekeeper
+vendor.gatekeeper.disable_spu=true
+vendor.gatekeeper.is_security_level_spu=0
+
+# Battery Property
+ro.charger.enable_suspend=1
+
+# USB
+vendor.usb.configfs=1
+vendor.usb.rps_mask=0
+vendor.usb.uvc.function.init=1
+service.adb.tcp.port=5555
