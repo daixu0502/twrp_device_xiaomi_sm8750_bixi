@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-DEVICE_PATH := device/xiaomi/bixi
+DEVICE_PATH := device/xiaomi/sm8750_bixi
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true

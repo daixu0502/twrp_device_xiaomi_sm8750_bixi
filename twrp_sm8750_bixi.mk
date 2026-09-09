@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-DEVICE_PATH := device/xiaomi/bixi
+DEVICE_PATH := device/xiaomi/sm8750_bixi
 
 # Inherit from device.mk configuration
 $(call inherit-product, $(DEVICE_PATH)/device.mk)
