@@ -1,17 +1,10 @@
-# Copyright (c) 2021 Qualcomm Technologies, Inc.
-# All Rights Reserved.
-# Confidential and Proprietary - Qualcomm Technologies, Inc.
-
-on init
-    start vendor.keymint-qti
-
+# Started from prepdecrypt.sh, which first points the version properties at the
+# installed system. The HAL reads them in its constructor and hands them to the
+# TA, so starting it any earlier binds the TA to recovery's own values.
 service vendor.keymint-qti /vendor/bin/hw/android.hardware.security.keymint-service-qti
+    disabled
     class early_hal
-    user system
-    group system drmrpc
-
-on property:vendor.car.hiber=hiberExit
-    stop vendor.keymint-qti
-    start vendor.keymint-qti
-    stop keystore2
-    start keystore2
+    user root
+    group root drmrpc
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/odm/lib64:/system/lib64:/sbin
+    seclabel u:r:recovery:s0

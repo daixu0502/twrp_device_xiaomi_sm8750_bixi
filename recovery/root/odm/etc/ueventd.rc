@@ -79,6 +79,3 @@ subsystem mi_display
 
  hang_task
 /dev/Monitor_Hang	0660	system	system
-
-#launch boost
-/dev/iorap_dev          0660    system  system

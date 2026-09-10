@@ -297,47 +297,6 @@
         }
       ]
     },
-// MIUI ADD: Performance_PerformanceEnhance
-    {
-      "Name": "DisplayPerformance",
-      "Actions": [
-        {
-          "Name": "JoinCgroup",
-          "Params":
-          {
-            "Controller": "cpu",
-            "Path": "display"
-          }
-        }
-      ]
-    },
-    {
-      "Name": "AudioPerformance",
-      "Actions": [
-        {
-          "Name": "JoinCgroup",
-          "Params":
-          {
-            "Controller": "cpu",
-            "Path": "audio"
-          }
-        }
-      ]
-    },
-    {
-      "Name": "TouchPerformance",
-      "Actions": [
-        {
-          "Name": "JoinCgroup",
-          "Params":
-          {
-            "Controller": "cpu",
-            "Path": "touch"
-          }
-        }
-      ]
-    },
-// END Performance_PerformanceEnhance
     {
       "Name": "CpuPolicySpread",
       "Actions": [
@@ -823,20 +782,6 @@
       "Name": "SCHED_SP_FOREGROUND",
       "Profiles": [ "HighPerformance", "HighIoPriority", "TimerSlackNormal" ]
     },
-// MIUI ADD: Performance_PerformanceEnhance
-    {
-      "Name": "SCHED_SP_DISPLAY",
-      "Profiles": [ "DisplayPerformance", "HighIoPriority", "TimerSlackNormal" ]
-    },
-    {
-      "Name": "SCHED_SP_AUDIO",
-      "Profiles": [ "AudioPerformance", "HighIoPriority", "TimerSlackNormal" ]
-    },
-    {
-      "Name": "SCHED_SP_TOUCH",
-      "Profiles": [ "TouchPerformance", "HighIoPriority", "TimerSlackNormal" ]
-    },
-// END Performance_PerformanceEnhance
     {
       "Name": "SCHED_SP_FOREGROUND_WINDOW",
       "Profiles": [ "HighPerformanceWI", "HighIoPriority", "TimerSlackNormal" ]
