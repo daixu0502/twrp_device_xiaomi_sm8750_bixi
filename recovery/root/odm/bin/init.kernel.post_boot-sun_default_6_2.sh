@@ -44,7 +44,21 @@ sched_rt_period_ms=`expr $sched_rt_runtime_ms + 100`
 sched_rt_period_us=`expr $sched_rt_period_ms \* 1000`
 echo $sched_rt_period_us > /proc/sys/kernel/sched_rt_period_us
 echo 880000 > /proc/sys/kernel/sched_rt_runtime_us
-
+#Configure cgroup parameters:
+project=`getprop ro.product.device`
+osversion=`getprop ro.mi.os.debug.version.code`
+if [ "$osversion" != "3.0" ]; then
+	case "$project" in
+		"dada"|"bixi"|"haotian")
+		echo 4196 > /dev/cpuctl/foreground/cpu.shares
+		echo 768 > /dev/cpuctl/background/cpu.shares
+		;;
+		"xuanyuan")
+		echo 4096 > /dev/cpuctl/foreground/cpu.shares
+		echo 512 > /dev/cpuctl/background/cpu.shares
+		;;
+	esac
+fi
 if [ -d /proc/sys/walt ]; then
 	# configure maximum frequency when CPUs are partially halted
 	echo 2147483647 > /proc/sys/walt/sched_max_freq_partial_halt
@@ -142,6 +156,7 @@ if [ -d /proc/sys/walt ]; then
 	echo 0 > /proc/sys/walt/input_boost/volkey_sched_boost_on_input
 
 	echo 3000 > /sys/module/perf_helper/sched_assi/sched_long_runnable
+	echo 6000 > /sys/module/perf_helper/sched_assi/sched_long_running
 	# END Performance_BoostFramework
 
 	echo "walt" > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
@@ -157,7 +172,7 @@ if [ -d /proc/sys/walt ]; then
 
 	# MIUI ADD: Performance_BoostFramework
         #set gpu min_pwrlevel
-	echo 11 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+	echo 12 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
         # END Performance_BoostFramework
 
 	if [ $rev == "1.0" ] || [ $rev == "1.1" ]; then
@@ -196,7 +211,7 @@ echo 0 > /proc/sys/kernel/sched_util_clamp_min_rt_default
 # cpuset parameters
 echo 0-3 > /dev/cpuset/background/cpus
 echo 0-3 > /dev/cpuset/system-background/cpus
-
+echo 0-5 > /dev/cpuset/foreground/boost/cpus
 
 # configure bus-dcvs
 bus_dcvs="/sys/devices/system/cpu/bus_dcvs"

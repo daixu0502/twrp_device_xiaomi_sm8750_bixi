@@ -2,12 +2,10 @@
 ro.adb.secure=0
 ro.boot.dynamic_partitions=true
 
-# Gatekeeper
+# Use the Qualcomm Gatekeeper path used by the bixi stock ROM. Recovery does
+# not bring up the SPU Gatekeeper service.
 vendor.gatekeeper.disable_spu=true
 vendor.gatekeeper.is_security_level_spu=0
-
-# Battery Property
-ro.charger.enable_suspend=1
 
 # USB
 vendor.usb.configfs=1

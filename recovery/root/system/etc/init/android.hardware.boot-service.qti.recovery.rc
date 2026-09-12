@@ -1,0 +1,15 @@
+# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
+service vendor.boot-qti /system/bin/hw/android.hardware.boot-service.qti.recovery
+    class early_hal
+    # init.recovery.qcom.rc starts this explicitly after creating the stock
+    # /dev/block/bootdevice compatibility link.
+    disabled
+    user root
+    group root
+    # Stock hal_bootctl_default policy is not present in the minimal TWRP
+    # ramdisk and denies access to the generic block_device-labelled misc node.
+    # The recovery domain already owns partition management in this environment.
+    seclabel u:r:recovery:s0
+    interface aidl android.hardware.boot.IBootControl/default

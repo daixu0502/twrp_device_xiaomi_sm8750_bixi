@@ -1,5 +1,7 @@
-service odm.post_boot /system/bin/sh -c /odm/bin/init.kernel.post_boot-sun_default_6_2.sh
+service odm.post_boot /system/bin/sh /odm/bin/init.kernel.post_boot-sun_default_6_2.sh
+    class core
     user root
     group root
+    disabled
     oneshot
     seclabel u:r:recovery:s0

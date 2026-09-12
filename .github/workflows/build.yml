@@ -22,11 +22,11 @@ on:
       DEVICE_PATH:
         description: "Device path device/"
         required: true
-        default: "xiaomi/sm8750_bixi"
+        default: "xiaomi/bixi"
       DEVICE_NAME:
         description: "Device name"
         required: true
-        default: "sm8750_bixi"
+        default: "twrp_bixi"
       LUNCH_TARGET:
         description: "lunch twrp_ (default same as device name)"
         required: false
@@ -129,7 +129,7 @@ jobs:
         export CCACHE_EXEC=$(command -v ccache)        
         export CCACHE_MAXSIZE=5G
         export USE_CCACHE=1
-        lunch twrp_${{ env.LUNCH_TARGET }}
+        lunch twrp_${{ env.LUNCH_TARGET }}-bp2a-eng
         (while true; do echo `date +%T` "Building TWRP..."; free -h; sleep 10; done) &
         TIP_PID=$!
         m ${{ github.event.inputs.BUILD_PARTITION }}image
