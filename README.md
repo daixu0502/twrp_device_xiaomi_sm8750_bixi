@@ -1,7 +1,7 @@
 # Xiaomi MIX Flip 2 (`bixi`) TWRP device tree
 
-This tree is derived from the unpacked Chinese HyperOS
-`OS3.0.304.0.WOHCNXM` Android 15 factory images in `Extracted-files_bixi`.
+This tree is derived from the unpacked HyperOS
+`OS3.0.304.0.WOHCNXM` Android 16 images.
 
 
 ## Confirmed stock layout
@@ -15,7 +15,7 @@ This tree is derived from the unpacked Chinese HyperOS
 | Recovery | Dedicated A/B partition, 104857600 bytes, no embedded kernel |
 | Display | 1224x2912 inner panel, `panel0-backlight` |
 | Storage | UFS, dynamic logical partitions, EROFS/ext4, F2FS userdata |
-| Android | 15 / API 35 |
+| Android | 16 / API 36 (TWRP 35) |
 
 
 ## Build

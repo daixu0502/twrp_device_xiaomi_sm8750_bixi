@@ -1,2 +1,15 @@
 soong_namespace {
 }
+
+cc_binary {
+    name: "bixi-cover-display-cleanup",
+    recovery: true,
+    srcs: ["display/bixi_cover_display_cleanup.c"],
+    c_std: "gnu11",
+    static_libs: ["libdrm"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}

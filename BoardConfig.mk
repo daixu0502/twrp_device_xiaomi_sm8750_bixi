@@ -116,8 +116,15 @@ TW_EXTRA_LANGUAGES := true
 TW_DEFAULT_LANGUAGE := zh_CN
 TW_DEVICE_VERSION := 0_xiaomi-sm8750-bixi_Jaco
 TW_NO_SCREEN_BLANK := true
+
 # 关闭背屏
 TW_INPUT_BLACKLIST := "goodix_ts"
+
+# Tool
+TW_INCLUDE_7ZA := true
+TW_INCLUDE_ZSTD := true
+TW_INCLUDE_REPACKTOOLS := true
+TW_ENABLE_ALL_PARTITION_TOOLS := true
 
 # Xiaomi AIDL haptics. The service wrapper follows the working SM8750 thales
 # recovery implementation; the motor calibration library remains bixi stock.

@@ -62,6 +62,17 @@ on boot
     # WALT can scale to full speed under load and return to idle frequencies.
     wait /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
     wait /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+    # This imported boot action runs before init's class_start default, hence
+    # before /system/bin/recovery opens card0 and becomes DRM master.
+    wait /dev/dri/card0 5
+    exec_start bixi-cover-display-cleanup
     start odm.post_boot
     write /sys/class/backlight/panel1-backlight/brightness 0
     setprop sys.usb.config adb
+
+service bixi-cover-display-cleanup /system/bin/bixi-cover-display-cleanup
+    user root
+    group root graphics
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
