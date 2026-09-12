@@ -26,7 +26,7 @@ on:
       DEVICE_NAME:
         description: "Device name"
         required: true
-        default: "twrp_bixi"
+        default: "bixi"
       LUNCH_TARGET:
         description: "lunch twrp_ (default same as device name)"
         required: false
