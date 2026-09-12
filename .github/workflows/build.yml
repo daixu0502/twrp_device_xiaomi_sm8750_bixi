@@ -29,8 +29,8 @@ on:
         default: "bixi"
       LUNCH_TARGET:
         description: "lunch twrp_ (default same as device name)"
-        required: false
-        default: ""
+        required: true
+        default: "bixi-bp2a-eng"
       BUILD_PARTITION:
         description: "Build partition"
         required: true
