@@ -125,6 +125,7 @@ TW_INCLUDE_7ZA := true
 TW_INCLUDE_ZSTD := true
 TW_INCLUDE_REPACKTOOLS := true
 TW_ENABLE_ALL_PARTITION_TOOLS := true
+TW_INCLUDE_WIFI := true
 
 # Xiaomi AIDL haptics. The service wrapper follows the working SM8750 thales
 # recovery implementation; the motor calibration library remains bixi stock.

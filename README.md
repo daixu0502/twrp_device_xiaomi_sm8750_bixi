@@ -53,3 +53,29 @@ After flashing a new build, first verify that `vendor.qseecomd`,
 cold start may spend a few seconds preparing this chain; repeated waits of tens
 of seconds are not normal. Then test PIN/password decryption without formatting
 `/data`.
+
+## Wi-Fi bring-up
+
+The Wi-Fi kernel modules are loaded asynchronously after TWRP stages the
+installed ROM's vendor modules. The ramdisk carries bixi's stock peach_v2
+configuration, matching rfkill module, stock wpa_supplicant/wpa_cli, and the
+seven additional stock libraries needed by that supplicant. Its Android 15
+binary uses the same compatibility preload approach as the crypto HALs. The
+control socket stays under `/tmp/recovery/sockets` rather than `/data`. The
+recovery ramdisk also includes the thales-tested ARM64 BusyBox at
+`/system/bin/busybox` for the TWRP Wi-Fi test action, plus a minimal dhcpcd
+hook to publish IP, gateway, and DNS properties. If a DHCP server omits DNS,
+the hook uses its advertised gateway as the first DNS server.
+
+After flashing a new build, check:
+
+```sh
+adb shell cat /tmp/bixi-wifi.log
+adb shell getprop twrp.wifi.driver.ready
+adb shell getprop init.svc.wpa_supplicant
+adb shell wpa_cli -p /tmp/recovery/sockets -i wlan0 ping
+```
+
+A driver-ready status alone does not establish a Wi-Fi connection;
+the stock AIDL supplicant must register and run. TWRP does not provide a Wi-Fi
+connection screen in this tree, so use `wpa_cli` for network setup.

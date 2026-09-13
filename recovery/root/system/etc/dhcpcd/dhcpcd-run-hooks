@@ -1,0 +1,36 @@
+#!/system/bin/sh
+
+# dhcpcd 6.8.2 calls this after a lease change. The recovery image does not
+# ship Android's default hook set, so publish the lease values expected by
+# TWRP's Wi-Fi page without writing settings to /data.
+[ "$interface" = wlan0 ] || exit 0
+
+case "$reason" in
+    BOUND|INFORM|REBIND|REBOOT|RENEW|TIMEOUT)
+        set -- $new_domain_name_servers
+        # Some bixi routers omit option 6 but provide a DNS proxy at the
+        # advertised gateway. Use that only when DHCP supplied no DNS.
+        if [ "$#" -eq 0 ] && [ -n "$new_routers" ]; then
+            set -- ${new_routers%% *}
+        fi
+        setprop dhcp.wlan0.dns1 "$1"
+        setprop dhcp.wlan0.dns2 "$2"
+        setprop dhcp.wlan0.dns3 "$3"
+        setprop dhcp.wlan0.dns4 "$4"
+        setprop net.dns1 "$1"
+        setprop net.dns2 "$2"
+        setprop dhcp.wlan0.ipaddress "$new_ip_address"
+        setprop dhcp.wlan0.gateway "${new_routers%% *}"
+        setprop dhcp.wlan0.mask "$new_subnet_mask"
+        setprop dhcp.wlan0.leasetime "$new_dhcp_lease_time"
+        setprop dhcp.wlan0.server "$new_dhcp_server_identifier"
+        setprop dhcp.wlan0.result ok
+        echo "reason=$reason ip=$new_ip_address dns=$new_domain_name_servers" >> /tmp/bixi-dhcp.log
+        ;;
+    EXPIRE|FAIL|IPV4LL|STOP|RELEASE)
+        setprop dhcp.wlan0.result failed
+        echo "reason=$reason" >> /tmp/bixi-dhcp.log
+        ;;
+esac
+
+exit 0

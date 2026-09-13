@@ -14,6 +14,11 @@ on init
     setprop sys.usb.config adb
     setprop prepdecrypt.setpatch true
     start vendor.boot-qti
+    # Wi-Fi control sockets live in RAM, not on /data. Keep userdata
+    # unmountable even after starting wpa_supplicant.
+    mkdir /tmp/recovery 0775 root wifi
+    mkdir /tmp/recovery/sockets 0770 wifi wifi
+    chmod 0755 /system/etc/dhcpcd/dhcpcd-run-hooks
 
 on early-fs
     # Follow the SM8750 thales recovery setup: let WALT recognize recovery and
@@ -69,6 +74,43 @@ on boot
     start odm.post_boot
     write /sys/class/backlight/panel1-backlight/brightness 0
     setprop sys.usb.config adb
+
+# Only the postrecoveryboot hook starts this oneshot service, after TWRP has
+# staged vendor modules and established its partition table. A Wi-Fi failure
+# cannot hold up init's boot action or block the recovery UI/ADB.
+service bixi-wifi-init /system/bin/sh /system/bin/bixi-wifi-init.sh
+    user root
+    # /firmware is the modem vfat mount (0550 system:system). Without the
+    # system group the script's firmware check fails before loading cnss2.
+    group root system wifi inet net_admin
+    capabilities NET_ADMIN NET_RAW SYS_MODULE CHOWN
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+
+on property:twrp.wifi.userspace.ready=true
+    start wpa_supplicant
+
+service wpa_supplicant /system/bin/wpa_supplicant -Dnl80211 -iwlan0 -c/system/etc/wifi/wpa_supplicant.conf
+    class main
+    user root
+    group root wifi inet net_admin
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
+    # Stock bixi's Android 15 binary needs the same compatibility shims as
+    # the security HALs; keep its seven extra libraries in an isolated path.
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/system/lib64/wifi
+    setenv LD_PRELOAD /system/lib64/libbinder_ndk-sdk35.so:/system/lib64/libbase-sdk35.so:/vendor/lib64/libcxx-bixi-sdk35.so
+
+service dhcpcd /system/bin/dhcpcd wlan0 -B
+    class main
+    user root
+    group root inet net_admin
+    capabilities NET_ADMIN NET_RAW
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
 
 service bixi-cover-display-cleanup /system/bin/bixi-cover-display-cleanup
     user root

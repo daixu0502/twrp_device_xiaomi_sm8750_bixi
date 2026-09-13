@@ -7,4 +7,8 @@ umount /odm 2>/dev/null || true
 setprop vendor.haptic.calibrate.done 1
 setprop ctl.start odm.vibratorfeature-service
 
+# Wi-Fi is deliberately deferred until the recovery UI bootstrap is underway.
+# The init oneshot service logs failures without delaying this hook.
+setprop ctl.start bixi-wifi-init
+
 exit 0
