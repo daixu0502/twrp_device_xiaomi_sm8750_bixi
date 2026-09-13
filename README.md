@@ -1,4 +1,4 @@
-# Xiaomi MIX Flip 2 (`bixi`) TWRP device tree
+# Xiaomi MIX Flip 2 (`bixi`) TWRP Recovery device tree
 
 This tree is derived from the unpacked HyperOS
 `OS3.0.304.0.WOHCNXM` Android 16 images.
