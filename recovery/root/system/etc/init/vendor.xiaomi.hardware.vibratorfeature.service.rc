@@ -24,4 +24,5 @@ service odm.vibratorfeature-service /system/bin/hw/vendor.xiaomi.hardware.vibrat
     setenv LD_LIBRARY_PATH /system/lib64:/vendor/lib64:/vendor/lib64/hw:/odm/lib64:/sbin
     # Stock Android 15 HALs otherwise bind to recovery's incompatible Android
     # 16 libbinder_ndk/libbase and fail before registering the AIDL service.
-    setenv LD_PRELOAD /system/lib64/libbinder_ndk-sdk35.so:/system/lib64/libbase-sdk35.so
+    # Keep the HAL's permanent hapticDump handle on recovery tmpfs, not /data.
+    setenv LD_PRELOAD /system/lib64/libbixi_haptic_log_redirect.so:/system/lib64/libbinder_ndk-sdk35.so:/system/lib64/libbase-sdk35.so

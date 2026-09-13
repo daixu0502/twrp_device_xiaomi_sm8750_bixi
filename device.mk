@@ -11,4 +11,5 @@ PRODUCT_SOONG_NAMESPACES += \
 # Release the bootloader's secondary-panel continuous splash before TWRP takes
 # DRM master. This prevents the static Xiaomi logo from remaining on the OLED.
 PRODUCT_PACKAGES += \
-    bixi-cover-display-cleanup
+    bixi-cover-display-cleanup \
+    libbixi_haptic_log_redirect
