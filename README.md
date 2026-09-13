@@ -3,7 +3,7 @@
 This tree is derived from the unpacked HyperOS
 `OS3.0.304.0.WOHCNXM` Android 16 images.
 
-
+Download from [Release](https://github.com/daixu0502/twrp_device_xiaomi_sm8750_bixi/releases)
 ## Confirmed stock layout
 
 | Item | Stock value |
